@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  PATRON
+  LIBRARIAN
+}
+enum SetBookSubject {
+  ENGLISH
+  KISWAHILI
+}
+
+enum SetBookCategory {
+  NOVEL
+  PLAY
+  SHORT_STORIES
+  POETRY
+  OTHER
+}
+
+enum Curriculum {
+  KCSE_8_4_4
+  CBC
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(PATRON)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Genre {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  books       Book[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Book {
+  id              Int      @id @default(autoincrement())
+  title           String
+  author          String
+  isbn            String?   @unique
+  publicationYear Int?
+  totalCopies     Int      @default(1)
+  availableCopies Int      @default(1)
+  genreId         Int
+  genre           Genre    @relation(fields: [genreId], references: [id])
+  setBookEntries  SetBook[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+model SetBook {
+  id                 Int              @id @default(autoincrement())
+  bookId             Int
+  book               Book             @relation(fields: [bookId], references: [id])
+  subject            SetBookSubject
+  category           SetBookCategory
+  curriculum         Curriculum
+  classLevel         String
+  publisher          String?
+  isCompulsory       Boolean?
+  prescribedFromYear Int
+  prescribedToYear   Int?
+  notes              String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([subject, curriculum])
+  @@index([prescribedFromYear, prescribedToYear])
+}
