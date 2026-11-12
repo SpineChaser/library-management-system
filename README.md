@@ -507,4 +507,24 @@ Potential next development stages include:
 \- Search and filtering.
 
 \- Library inventory management.
+ 
+## Prisma vs Document Databases
 
+One thing that felt different when using Prisma compared
+with a document database was how relationships are
+defined and managed.
+
+With Prisma and PostgreSQL, relationships are explicitly
+modelled using foreign keys. For example, each Book
+references a Genre through genreId. This helps maintain
+data consistency and avoids duplicating genre information
+across multiple books.
+
+In a document database, related information can instead
+be embedded inside documents. This can make retrieving
+related data convenient, but may lead to duplicated
+information when the same data is used in multiple places.
+
+Using Prisma helped me understand the importance of
+relational modelling, foreign keys, migrations and
+maintaining data integrity.
